@@ -1548,6 +1548,7 @@ extent_alloc_wrapper(tsdn_t *tsdn, arena_t *arena,
 			 */
 			return NULL;
 		}
+		//执行mmap操作
 		extent = extent_alloc_wrapper_hard(tsdn, arena, r_extent_hooks,
 		    new_addr, size, pad, alignment, slab, szind, zero, commit);
 	}

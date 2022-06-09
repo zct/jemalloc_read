@@ -435,6 +435,7 @@ arena_extent_alloc_large(tsdn_t *tsdn, arena_t *arena, size_t usize,
 	szind_t szind = sz_size2index(usize);
 	size_t mapped_add;
 	bool commit = true;
+	//先从dirty_extents中回收，然后再从muzzy_extents中回收
 	extent_t *extent = extents_alloc(tsdn, arena, &extent_hooks,
 	    &arena->extents_dirty, NULL, usize, sz_large_pad, alignment, false,
 	    szind, zero, &commit);

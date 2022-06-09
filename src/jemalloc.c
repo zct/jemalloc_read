@@ -495,6 +495,7 @@ label_return:
 }
 
 /* Slow path, called only by arena_choose(). */
+//选择arena的逻辑
 arena_t *
 arena_choose_hard(tsd_t *tsd, bool internal) {
 	arena_t *ret JEMALLOC_CC_SILENCE_INIT(NULL);
@@ -2024,6 +2025,7 @@ compute_size_with_overflow(bool may_overflow, dynamic_opts_t *dopts,
 	return true;
 }
 
+//malloc入口函数
 JEMALLOC_ALWAYS_INLINE int
 imalloc_body(static_opts_t *sopts, dynamic_opts_t *dopts, tsd_t *tsd) {
 	/* Where the actual allocated memory will live. */

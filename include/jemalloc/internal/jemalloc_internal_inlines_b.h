@@ -4,6 +4,7 @@
 #include "jemalloc/internal/rtree.h"
 
 /* Choose an arena based on a per-thread value. */
+//选择arena的逻辑
 static inline arena_t *
 arena_choose_impl(tsd_t *tsd, arena_t *arena, bool internal) {
 	arena_t *ret;

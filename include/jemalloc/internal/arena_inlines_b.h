@@ -154,7 +154,7 @@ arena_decay_extent(tsdn_t *tsdn,arena_t *arena, extent_hooks_t **r_extent_hooks,
 		arena_stats_unlock(tsdn, &arena->stats);
 	}
 }
-
+//这个函数也是所有分配的入口吗
 JEMALLOC_ALWAYS_INLINE void *
 arena_malloc(tsdn_t *tsdn, arena_t *arena, size_t size, szind_t ind, bool zero,
     tcache_t *tcache, bool slow_path) {
