@@ -1226,6 +1226,7 @@ arena_slab_alloc_hard(tsdn_t *tsdn, arena_t *arena,
 	return slab;
 }
 
+//slab的分配函数
 static extent_t *
 arena_slab_alloc(tsdn_t *tsdn, arena_t *arena, szind_t binind, unsigned binshard,
     const bin_info_t *bin_info) {
