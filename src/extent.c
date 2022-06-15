@@ -1324,6 +1324,7 @@ extent_grow_retained(tsdn_t *tsdn, arena_t *arena,
 		alloc_size = sz_pind2sz(arena->extent_grow_next + egn_skip);
 	}
 
+	//只是分配extent_t结构体本身
 	extent_t *extent = extent_alloc(tsdn, arena);
 	if (extent == NULL) {
 		goto label_err;
@@ -1549,7 +1550,7 @@ extent_alloc_wrapper(tsdn_t *tsdn, arena_t *arena,
 			 */
 			return NULL;
 		}
-		//执行mmap操作
+		//如果opt_retain 位false的情况，执行mmap操作
 		extent = extent_alloc_wrapper_hard(tsdn, arena, r_extent_hooks,
 		    new_addr, size, pad, alignment, slab, szind, zero, commit);
 	}
