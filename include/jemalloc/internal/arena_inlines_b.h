@@ -269,6 +269,7 @@ arena_dalloc_no_tcache(tsdn_t *tsdn, void *ptr) {
 JEMALLOC_ALWAYS_INLINE void
 arena_dalloc_large(tsdn_t *tsdn, void *ptr, tcache_t *tcache, szind_t szind,
     bool slow_path) {
+	//nhbins->tcache能够缓存的最大size class
 	if (szind < nhbins) {
 		if (config_prof && unlikely(szind < SC_NBINS)) {
 			arena_dalloc_promoted(tsdn, ptr, tcache, slow_path);
@@ -277,6 +278,7 @@ arena_dalloc_large(tsdn_t *tsdn, void *ptr, tcache_t *tcache, szind_t szind,
 			    slow_path);
 		}
 	} else {
+		//根据extent中的地址找到其所属的extent
 		extent_t *extent = iealloc(tsdn, ptr);
 		large_dalloc(tsdn, extent);
 	}
