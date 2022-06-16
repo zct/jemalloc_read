@@ -1558,6 +1558,7 @@ extent_alloc_wrapper(tsdn_t *tsdn, arena_t *arena,
 	return extent;
 }
 
+//inner的状态要是active
 static bool
 extent_can_coalesce(arena_t *arena, extents_t *extents, const extent_t *inner,
     const extent_t *outer) {
@@ -1633,6 +1634,7 @@ extent_try_coalesce_impl(tsdn_t *tsdn, arena_t *arena,
 			if (can_coalesce && !extent_coalesce(tsdn, arena,
 			    r_extent_hooks, extents, extent, next, true,
 			    growing_retained)) {
+				//如果设置了延迟合并，只要有一个合并成功了，就退出
 				if (extents->delay_coalesce) {
 					/* Do minimal coalescing. */
 					*coalesced = true;
@@ -2179,6 +2181,7 @@ extent_split_wrapper(tsdn_t *tsdn, arena_t *arena,
 	    szind_a, slab_a, size_b, szind_b, slab_b, false);
 }
 
+//返回true是代表不能合并
 static bool
 extent_merge_default_impl(void *addr_a, void *addr_b) {
 	if (!maps_coalesce && !opt_retain) {
