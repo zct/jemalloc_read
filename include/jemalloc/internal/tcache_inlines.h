@@ -48,6 +48,7 @@ tcache_alloc_small(tsd_t *tsd, arena_t *arena, tcache_t *tcache,
 
 	assert(binind < SC_NBINS);
 	bin = tcache_small_bin_get(tcache, binind);
+	//cache中有
 	ret = cache_bin_alloc_easy(bin, &tcache_success);
 	assert(tcache_success == (ret != NULL));
 	if (unlikely(!tcache_success)) {
