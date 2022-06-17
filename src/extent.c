@@ -1719,6 +1719,8 @@ extent_record(tsdn_t *tsdn, arena_t *arena, extent_hooks_t **r_extent_hooks,
 		extent = extent_try_coalesce(tsdn, arena, r_extent_hooks,
 		    rtree_ctx, extents, extent, NULL, growing_retained);
 	} else if (extent_size_get(extent) >= SC_LARGE_MINCLASS) {
+		//只有extents_dirty才会进入到这个逻辑来
+		//所以对于dirty状态的，大于SC_LARGE_MINCLASS也会进行合并
 		assert(extents == &arena->extents_dirty);
 		/* Always coalesce large extents eagerly. */
 		bool coalesced;
@@ -1933,6 +1935,7 @@ extent_commit_impl(tsdn_t *tsdn, arena_t *arena,
 	if (*r_extent_hooks != &extent_hooks_default) {
 		extent_hook_post_reentrancy(tsdn);
 	}
+	//在overcommit为true的前提下，这个err应该都为true，这里应该设置不了commit状态
 	extent_committed_set(extent, extent_committed_get(extent) || !err);
 	return err;
 }
