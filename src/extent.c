@@ -443,7 +443,7 @@ static extent_t *
 extents_first_fit_locked(tsdn_t *tsdn, arena_t *arena, extents_t *extents,
     size_t size) {
 	extent_t *ret = NULL;
-
+	//psz->pagesize
 	pszind_t pind = sz_psz2ind(extent_size_quantize_ceil(size));
 
 	if (!maps_coalesce && !opt_retain) {
@@ -454,6 +454,7 @@ extents_first_fit_locked(tsdn_t *tsdn, arena_t *arena, extents_t *extents,
 		return extent_heap_empty(&extents->heaps[pind]) ? NULL :
 		    extent_heap_first(&extents->heaps[pind]);
 	}
+	
 
 	for (pszind_t i = (pszind_t)bitmap_ffu(extents->bitmap,
 	    &extents_bitmap_info, (size_t)pind);
@@ -469,10 +470,12 @@ extents_first_fit_locked(tsdn_t *tsdn, arena_t *arena, extents_t *extents,
 		 *
 		 * Only do check for dirty extents (delay_coalesce).
 		 */
+		//只有dirty的有大小限制，默认不能超过2^6*size的大小
 		if (extents->delay_coalesce &&
 		    (sz_pind2sz(i) >> opt_lg_extent_max_active_fit) > size) {
 			break;
 		}
+		//找序列化最小且地址最
 		if (ret == NULL || extent_snad_comp(extent, ret) < 0) {
 			ret = extent;
 		}
@@ -1139,6 +1142,7 @@ extent_recycle(tsdn_t *tsdn, arena_t *arena, extent_hooks_t **r_extent_hooks,
 	rtree_ctx_t rtree_ctx_fallback;
 	rtree_ctx_t *rtree_ctx = tsdn_rtree_ctx(tsdn, &rtree_ctx_fallback);
 
+	//会讲extent设置成active状态
 	extent_t *extent = extent_recycle_extract(tsdn, arena, r_extent_hooks,
 	    rtree_ctx, extents, new_addr, size, pad, alignment, slab,
 	    growing_retained);
@@ -1156,6 +1160,7 @@ extent_recycle(tsdn_t *tsdn, arena_t *arena, extent_hooks_t **r_extent_hooks,
 	if (*commit && !extent_committed_get(extent)) {
 		if (extent_commit_impl(tsdn, arena, r_extent_hooks, extent,
 		    0, extent_size_get(extent), growing_retained)) {
+		//linux正常情况下不会进入到这个逻辑
 			extent_record(tsdn, arena, r_extent_hooks, extents,
 			    extent, growing_retained);
 			return NULL;
@@ -1693,6 +1698,7 @@ extent_try_coalesce_large(tsdn_t *tsdn, arena_t *arena,
  * Does the metadata management portions of putting an unused extent into the
  * given extents_t (coalesces, deregisters slab interiors, the heap operations).
  */
+//在函数的末尾会设置成和extents状态一样
 static void
 extent_record(tsdn_t *tsdn, arena_t *arena, extent_hooks_t **r_extent_hooks,
     extents_t *extents, extent_t *extent, bool growing_retained) {
