@@ -929,6 +929,7 @@ arena_decay_to_limit(tsdn_t *tsdn, arena_t *arena, arena_decay_t *decay,
 
 	extent_hooks_t *extent_hooks = extent_hooks_get(arena);
 
+	//decay_extents存放将要被gc的extent
 	extent_list_t decay_extents;
 	extent_list_init(&decay_extents);
 
@@ -996,6 +997,7 @@ arena_decay_muzzy(tsdn_t *tsdn, arena_t *arena, bool is_background_thread,
 
 void
 arena_decay(tsdn_t *tsdn, arena_t *arena, bool is_background_thread, bool all) {
+	//如果其他线程正在做decay，返回的是true
 	if (arena_decay_dirty(tsdn, arena, is_background_thread, all)) {
 		return;
 	}

@@ -280,6 +280,7 @@ extent_size_quantize_ceil(size_t size) {
 }
 
 /* Generate pairing heap functions. */
+//比较函数是序列好号最小的且地址最低的
 ph_gen(, extent_heap_, extent_heap_t, extent_t, ph_link, extent_snad_comp)
 
 bool
@@ -462,6 +463,7 @@ extents_first_fit_locked(tsdn_t *tsdn, arena_t *arena, extents_t *extents,
 	    i = (pszind_t)bitmap_ffu(extents->bitmap, &extents_bitmap_info,
 	    (size_t)i+1)) {
 		assert(!extent_heap_empty(&extents->heaps[i]));
+		//heap中的比较函数就是extent_snad_comp
 		extent_t *extent = extent_heap_first(&extents->heaps[i]);
 		assert(extent_size_get(extent) >= size);
 		/*
@@ -1941,7 +1943,7 @@ extent_commit_impl(tsdn_t *tsdn, arena_t *arena,
 	if (*r_extent_hooks != &extent_hooks_default) {
 		extent_hook_post_reentrancy(tsdn);
 	}
-	//在overcommit为true的前提下，这个err应该都为true，这里应该设置不了commit状态
+	//在overcommit为true的前提下，这个err应该都为true, 设置的commit取决于commit的状态
 	extent_committed_set(extent, extent_committed_get(extent) || !err);
 	return err;
 }
@@ -1980,6 +1982,7 @@ extent_decommit_wrapper(tsdn_t *tsdn, arena_t *arena,
 	if (*r_extent_hooks != &extent_hooks_default) {
 		extent_hook_post_reentrancy(tsdn);
 	}
+	//在overcommit=true的前提啊下，这个err为true, 设置的状态取决于extent commit的状态
 	extent_committed_set(extent, extent_committed_get(extent) && err);
 	return err;
 }

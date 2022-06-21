@@ -122,6 +122,7 @@ arena_decay_ticks(tsdn_t *tsdn, arena_t *arena, unsigned nticks) {
 	if (unlikely(decay_ticker == NULL)) {
 		return;
 	}
+	//ticks是指分配的事件计数，包括malloc和free
 	if (unlikely(ticker_ticks(decay_ticker, nticks))) {
 		arena_decay(tsdn, arena, false, false);
 	}

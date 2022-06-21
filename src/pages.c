@@ -55,7 +55,7 @@ os_pages_map(void *addr, size_t size, size_t alignment, bool *commit) {
 	assert(ALIGNMENT_ADDR2BASE(addr, os_page) == addr);
 	assert(ALIGNMENT_CEILING(size, os_page) == size);
 	assert(size != 0);
-
+	//在os_overcommits为true的前提下，extent的commit状态一直都是true
 	if (os_overcommits) {
 		*commit = true;
 	}
