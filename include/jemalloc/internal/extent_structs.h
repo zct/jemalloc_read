@@ -203,6 +203,8 @@ struct extents_s {
 	 *
 	 * Synchronization: mtx.
 	 */
+	//bitmap用来管理哪些尺寸的heap是否为空，不为空在recycle的时候就可以复用，从对应的
+	//heaps中去寻找
 	bitmap_t		bitmap[BITMAP_GROUPS(SC_NPSIZES + 1)];
 
 	/*
